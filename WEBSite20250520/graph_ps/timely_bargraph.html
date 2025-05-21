@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="ja">
+<meta charset="UTF-8">
+<head>
+
+    <!--  独自ライブラリ読み込み -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.bundle.js"></script>
+    <!--  /独自ライブラリ読み込み -->
+
+    <title>グラフ</title> 
+</head>
+<body>
+    <div style="width:100%" >
+    <canvas id="chart"></canvas>
+    </div>
+
+    <script>
+        var ctx = document.getElementById("chart").getContext('2d');
+        var myChart = new Chart(ctx, {
+            type: "bar",    // ★必須　グラフの種類
+            backgroundColor: '#3f3f3f',
+            data: {
+                labels:  ["0:00", "", "2:00", "", "4:00","", "6:00", "", "8:00", "", "10:00", "", "12:00", "", "14:00", "", "16:00", "", "18:00", "", "20:00", "", "22:00", "", ""],  // Ｘ軸のラベル
+                datasets: [
+                    {
+                        label: "東灘発電所",         // 系列名
+                        data: [45, 44, 48, 40, 41, 45, 45, 41, 40, 39, 40, 41, 42, 44, 44, 38, 40, 44, 10, 0, 0, 0, 0, 0, ] ,    // ★必須　系列Ａのデータ
+                        backgroundColor: '#3f3fff',
+                    },     
+                 ]
+            },
+        options: {                       // オプション
+                responsive: true,  // canvasサイズ自動設定機能を使わない。HTMLで指定したサイズに固定
+      
+            chartArea: {
+                backgroundColor: '#3f3fff'
+            },
+
+            title: {                           // タイトル
+                display: true,                     // 表示設定
+                fontSize: 16,                      // フォントサイズ
+                fontFamily: "sans-serif",
+                text: '本日の発電量'                   // タイトルのラベル
+            },
+            legend: {                          // 凡例
+                display: false,                     // 表示の有無
+                fontSize: 12,                      // フォントサイズ
+                // fontFamily: "sans-serif",
+                // position: 'bottom',             // 表示位置
+
+            },
+
+
+                scales: {                          // 軸設定
+                    xAxes: [{                       // Ｘ軸設定
+                        display: true,                // 表示の有無
+                        barPercentage: 0.8,           // カテゴリ幅に対する棒の幅の割合
+                        //categoryPercentage: 0.8,    // 複数棒のスケールに対する幅の割合
+                        scaleLabel: {                 // 軸ラベル
+                            display: true,                // 表示設定
+                            labelString: '2025年3月16日',    // ラベル
+                            fontSize: 12                  // フォントサイズ
+                        },
+                        gridLines: {                   // 補助線
+                            display: true               // 補助線あり
+                        },
+                        ticks: {                      // 目盛り
+                            fontSize: 12 ,                // フォントサイズ
+                            maxRotation: 0 ,              // 表示回転しない
+                            minRotation: 0 ,              // 表示回転しない
+                        }
+                    }],
+                    yAxes: [{
+                            display: true,                 // 表示の有無
+
+                        scaleLabel: {                  // 軸ラベル
+                            display: true,                 // 表示の有無
+                            labelString: '発電量 (kWh)',     // ラベル
+                            fontSize: 12                  // フォントサイズ
+                        },
+                        gridLines: {                   // 補助線
+                            display: true ,               // 補助線あり
+                        },
+
+                        ticks: {                       // 目盛り
+                            min: 0,                        // 最小値
+                            max: 50,                     // 最大値
+                            fontSize: 12 ,                // フォントサイズ
+                        },
+                    }],
+                },
+            }
+        });
+  
+      </script>
+</body>
+
+</html>

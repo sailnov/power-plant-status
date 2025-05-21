@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="ja">
+<meta charset="UTF-8">
+<head>
+
+    <!--  独自ライブラリ読み込み -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.js"></script>
+    <!--  /独自ライブラリ読み込み -->
+
+    <title>グラフ</title> 
+</head>
+<body>
+
+     <div style="width:100%;" >
+    <canvas id="chart"></canvas>
+    </div>
+
+    <script>
+        var ctx = document.getElementById("chart").getContext('2d');
+        var myChart = new Chart(ctx, {
+            type: "bar",    // ★必須　グラフの種類
+            data: {
+                labels:  ["1月", "2月", "3月", "4月", "5月","6月", "7月", "8月", "9月", "10月", "11月", "12月", ""],  // Ｘ軸のラベル
+                datasets: [
+                    {
+                        label: "東灘発電所",         // 系列名
+                        data: [26092, 23479, 26038, 25110, 0, 0, 0, 0, 0, 0, 0, 0 ] ,    // ★必須　系列Ａのデータ
+                        backgroundColor: '#3f3fff',stack: 'stack-1',
+                    },     
+                 ]
+            },
+        options: {                       // オプション
+                responsive: true,  // canvasサイズ自動設定機能を使わない。HTMLで指定したサイズに固定
+
+            title: {                           // タイトル
+                display: true,                     // 表示設定
+                fontSize: 16,                      // フォントサイズ
+                fontFamily: "sans-serif",
+                text: '月間発電量'                   // タイトルのラベル
+            },
+            legend: {                          // 凡例
+                display: false,                     // 表示の有無
+                fontSize: 8,                      // フォントサイズ
+                // fontFamily: "sans-serif",
+                position: 'bottom',             // 表示位置
+
+            },
+
+
+                scales: {                          // 軸設定
+                    xAxes: [{                       // Ｘ軸設定
+                        display: true,                // 表示の有無
+                        barPercentage: 0.8,           // カテゴリ幅に対する棒の幅の割合
+                        //categoryPercentage: 0.8,    // 複数棒のスケールに対する幅の割合
+                        scaleLabel: {                 // 軸ラベル
+                            display: true,                // 表示設定
+                            labelString: '2025年',    // ラベル
+                            // fontColor: "black",             // 文字の色
+                            // fontSize: 12                  // フォントサイズ
+                        },
+                        gridLines: {                   // 補助線
+                            display: true               // 補助線なし
+                        },
+                        ticks: {                      // 目盛り
+                            fontSize: 12 ,                // フォントサイズ
+                            maxRotation: 0 ,              // 表示回転しない
+                            minRotation: 0 ,              // 表示回転しない
+                        }
+                    }],
+                    yAxes: [{
+                            display: true,                 // 表示の有無
+
+                        scaleLabel: {                  // 軸ラベル
+                            display: true,                 // 表示の有無
+                            labelString: '発電量 (kWh)',     // ラベル
+                            // fontFamily: "sans-serif",      // フォントファミリー
+                            // fontColor: "blue",             // 文字の色
+                            // fontSize: 16                   // フォントサイズ
+                        },
+                        gridLines: {                   // 補助線
+                            // display: true ,               // 補助線なし
+                            // color: "rgba(0, 0, 255, 0.2)", // 補助線の色
+                            // zeroLineColor: "black"         // y=0（Ｘ軸の色）
+                        },
+
+                            ticks: {                       // 目盛り
+                                min: 0,                        // 最小値
+                                max: 30000,                     // 最大値
+                            },
+                    }],
+                },
+            }
+        });
+  
+      </script>
+</body>
+
+</html>

@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html><head><title>下西発電所</title>
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+<meta name="viewport" content="width=1024">
+<LINK REL="stylesheet" TYPE="text/css" HREF="s_common.css">
+<script type="text/javascript" src="button_enable.js"></script>
+<script type="text/javascript" src="dl_header.js"></script>
+<script type="text/javascript" src="data_pi.js"></script>
+<script type="text/javascript" src="s_xml_cmd.js" ></script>
+<script type="text/javascript" src="s_button_event.js"></script>
+<script type="text/javascript">
+
+var auto_updating = 0;
+
+window.onload = function() {
+	var table,hh,ch;
+	var row,cell,txt;
+	var str;
+
+	update_header();
+
+	table = document.getElementById( "list_pi" );
+	for( ch=0; ch<pi_chs; ch++ ) {
+	    row = table.insertRow( ch );
+		if( ch & 1 )	row.setAttribute( "style", "background-color: #5a5a5a" );
+		else			row.setAttribute( "style", "background-color: #808080" );
+
+		row.setAttribute( "height", "60px" );
+
+        cell = row.insertCell(0);
+        cell.setAttribute( "class", "ch" );
+		txt = document.createTextNode( pi_ch[ch] );
+		cell.appendChild(txt);
+
+        cell = row.insertCell(1);
+        cell.setAttribute( "class", "name" );
+		txt = document.createTextNode( pi_name[ch] );
+		cell.appendChild(txt);
+
+        cell = row.insertCell(2);
+        cell.setAttribute( "class", "pv" );
+		txt = document.createTextNode( pi_real[ch] );
+		cell.appendChild(txt);
+
+        cell = row.insertCell(3);
+        cell.setAttribute( "class", "unit" );
+		txt = document.createTextNode( pi_unit[ch] );
+		cell.appendChild(txt);
+
+        cell = row.insertCell(4);
+        cell.setAttribute( "class", "reset" );
+		btn = document.createElement("input");
+		btn.setAttribute( "type", "button" );
+		btn.setAttribute( "class", "reset_button" );
+		btn.setAttribute( "onclick", "ResetPi(" + pi_chno[ch] + ", '" + pi_name[ch] + "');" );
+		if( (button_disable == 1) || (pi_enable == 0) ) btn.disabled = true;
+		cell.appendChild(btn);
+
+        cell = row.insertCell(5);
+        cell.setAttribute( "class", "status" );
+		txt = document.createTextNode( pi_area[ch] );
+		cell.appendChild(txt);
+
+        cell = row.insertCell(6);
+        cell.setAttribute( "class", "signal" );
+        cell.setAttribute( "style", "background-color: " + pi_color[ch] );
+	}
+
+	var pos = getCookie( "POS_PI" );
+	if( pos ){
+		if( pos != 0 ){
+			document.body.scrollTop = pos;
+			clearCookie( "POS_PI" );
+		}
+	}
+
+	update_refresh();
+
+	if( button_disable == 0 ){
+		var ref = getCookie("REF_PI");
+		if( ref == "" ){
+			ref = "0";
+		}
+		if( ref != 0 ){
+			setInterval("update_refresh()",ref*1000);
+		}
+	}
+
+}
+
+function update_refresh()
+{
+	if( auto_updating != 0 ) return;
+	auto_updating = 1;
+	update_data_pi( update_auto, update_timeout );
+}
+
+function update_timeout()
+{
+	auto_updating = 0;
+}
+
+function update_auto()
+{
+	var ch,table;
+	update_header_time();
+	table = document.getElementById( "list_pi" );
+	for( ch=0; ch<pi_chs; ch++ ) {
+//		table.rows[ch].cells[0].innerHTML = pi_ch[ch];
+//		table.rows[ch].cells[1].innerHTML = pi_name[ch];
+		table.rows[ch].cells[2].innerHTML = pi_real[ch];
+//		table.rows[ch].cells[3].innerHTML = pi_unit[ch];
+		table.rows[ch].cells[5].innerHTML = pi_area[ch];
+		table.rows[ch].cells[6].setAttribute( "style", "background-color: " + pi_color[ch] );
+	}
+	auto_updating = 0;
+}
+
+window.onpageshow = function() {
+	document.screen_select.s_sel.value = "DATA";
+	document.type_select.t_sel.value = "PI";
+}
+
+function update_local()
+{
+	file_load_ie( "./s_data_pi.html" );
+	file_load_ie( "./data_pi.js" );
+	var pos = document.body.scrollTop;
+	if( pos != 0 ){
+		setCookie( "POS_PI", pos );
+	}
+	update();
+}
+
+</script>
+<style type="text/css">
+.table_header{
+	position : absolute;
+	top: 241px;
+	left: 0px;
+	width : 1024px;
+	height : 40px;
+	border-spacing: 0;
+	table-layout: fixed;
+	word-break: break-all;
+	word-wrap: break-word;
+}
+.area_pi{
+	position : absolute;
+	top: 281px;
+	left: 0px;
+	width : 1024px;
+	border-spacing: 0;
+}
+.table_pi{
+	width : 1024px;
+	border-spacing: 0;
+	table-layout: fixed;
+	word-break: break-all;
+	word-wrap: break-word;
+}
+.ch_header{
+	width : 7%;
+	font-size : x-large;
+	color : #ffffff;
+	text-align : center;
+	vertical-align : middle;
+	border-style: solid;
+	border-color: black;
+	border-width: 1px 1px 1px 0px;
+}
+.ch{
+	width : 7%;
+	font-size : x-large;
+	color : #ffffff;
+	text-align : center;
+	vertical-align : middle;
+	border-style: solid;
+	border-color: black;
+	border-width: 1px 1px 1px 0px;
+}
+.name_header{
+	width : 28%;
+	font-size : x-large;
+	color : #ffffff;
+	text-align : center;
+	vertical-align : middle;
+	border-style: solid;
+	border-color: black;
+	border-width: 1px;
+}
+.name{
+	width : 28%;
+	font-size : x-large;
+	color : #ffffff;
+	text-align : left;
+	vertical-align : middle;
+	border-style: solid;
+	border-color: black;
+	border-width: 1px;
+}
+.pv_header{
+	width : 15%;
+	font-size : x-large;
+	color : #ffffff;
+	text-align : center;
+	vertical-align : middle;
+	border-style: solid;
+	border-color: black;
+	border-width: 1px;
+}
+.pv{
+	width : 15%;
+	font-size : xx-large;
+	color : #ffffff;
+	text-align : right;
+	vertical-align : middle;
+	border-style: solid;
+	border-color: black;
+	border-width: 1px;
+}
+.unit_header{
+	width : 10%;
+	font-size : x-large;
+	color : #ffffff;
+	text-align : center;
+	vertical-align : middle;
+	border-style: solid;
+	border-color: black;
+	border-width: 1px;
+}
+.unit{
+	width : 10%;
+	font-size : x-large;
+	color : #ffffff;
+	text-align : right;
+	vertical-align : middle;
+	border-style: solid;
+	border-color: black;
+	border-width: 1px;
+}
+.reset_header{
+	width : 10%;
+	font-size : x-large;
+	color : #ffffff;
+	text-align : center;
+	vertical-align : middle;
+	border-style: solid;
+	border-color: black;
+	border-width: 1px;
+}
+.reset{
+	width : 10%;
+	font-size : x-large;
+	color : #ffffff;
+	text-align : center;
+	vertical-align : middle;
+	border-style: solid;
+	border-color: black;
+	border-width: 1px;
+}
+.reset_button{
+	width: 98px;
+	height: 56px;
+	font-size : x-large;
+}
+.status_header{
+	width : 20%;
+	font-size : x-large;
+	color : #ffffff;
+	text-align : center;
+	vertical-align : middle;
+	border-style: solid;
+	border-color: black;
+	border-width: 1px;
+}
+.status{
+	width : 20%;
+	font-size : x-large;
+	color : #ffffff;
+	text-align : center;
+	vertical-align : middle;
+	border-style: solid;
+	border-color: black;
+	border-width: 1px;
+}
+.signal_header{
+	width : 10%;
+	font-size : x-large;
+	color : #ffffff;
+	text-align : center;
+	vertical-align : middle;
+	border-style: solid;
+	border-color: black;
+	border-width: 1px 0px 1px 1px;
+}
+.signal{
+	width : 10%;
+	font-size : x-large;
+	color : #ffffff;
+	text-align : left;
+	vertical-align : middle;
+	border-style: solid;
+	border-color: black;
+	border-width: 1px 0px 1px 1px;
+}
+</style>
+</head>
+
+<body style="background-color: #000000;">
+
+<!-- HEADER -->
+<div>
+	<table class="header">
+	  <tbody><tr>
+    	<td class="name1" id="name1"></td>
+    	<td class="name2" id="name2"></td>
+    	<td class="fig1"></td>
+      </tr></tbody>
+    </table>
+</div>
+
+<!-- SCREEN SELCT -->
+<form class="screen_select" name="screen_select">
+  <select class="s_sel" name="s_sel" onchange="jump('REF_PI')">
+	<option value="MENU">Menu</option>
+	<option value="DATA" selected>Data</option>
+	<option value="TREND">Trend</option>
+	<option value="EVENT">Event</option>
+	<option value="AUTOREF">-AutoRef-</option>
+  </select>
+</form>
+
+<!-- TYPE SELCT -->
+<form class="type_select" name="type_select">
+  <select class="t_sel" name="t_sel" onchange="jump_data()">
+	<option value="AI">AI Data</option>
+	<option value="DI">DI Data</option>
+	<option value="PI" selected>PI Data</option>
+	<option value="DO">DO Data</option>
+	<option value="AO">AO Data</option>
+  </select>
+</form>
+
+<!-- UPDATE -->
+<input class ="button_update" type="button" value="Update" onclick="update_local();">
+
+<!-- TIME,NAME3,DATE -->
+<div>
+	<table class="time_name3_date">
+	  <tbody><tr>
+    	<td class="back18"></td>
+    	<td class="time" id="time"></td>
+    	<td class="name3" id="name3"></td>
+    	<td class="date" id="date"></td>
+    	<td class="back22"></td>
+      </tr></tbody>
+    </table>
+</div>
+
+<!-- PI DATA -->
+<div>
+	<table class="table_header">
+	  <tbody>
+	  <tr style="background-color: #5a5a5a;">
+	    <th class="ch_header">Ch</th>
+	    <th class="name_header">Name</th>
+	    <th class="pv_header">Data</th>
+	    <th class="unit_header">Unit</th>
+	    <th class="reset_header">Reset</th>
+	    <th class="status_header">Status</th>
+	    <th class="signal_header">Signal</th>
+	  </tr>
+	  </tbody>
+	</table>
+</div>
+<div class="area_pi" id="area_pi">
+	<table class="table_pi" id="list_pi">
+	  <tbody></tbody>
+	</table>
+</div>
+
+</body></html>
+

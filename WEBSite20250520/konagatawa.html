@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <title>小長辿発電所カメラ</title>
+    <style>
+        .container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+        }
+
+        .iframe-wrapper {
+            width: 100%;
+            /* ↓アスペクト比は適当に変えて */
+            aspect-ratio: 16 / 9;
+            overflow: hidden;
+        }
+
+        .iframe-wrapper>iframe {
+            width: 100%;
+            height: 100%;
+            border: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="left iframe-wrapper">
+            <iframe src="camview02.html" width="100%" height="540" scrolling="no"></iframe>
+        </div>
+        <div class="right iframe-wrapper">
+            <iframe src="camview01.html" width="100%" height="540" scrolling="no"></iframe>
+        </div>
+        <div class="left iframe-wrapper">
+            <iframe src="camview04.html" width="100%" height="540" scrolling="no"></iframe>
+        </div>
+        <div class="right iframe-wrapper">
+            <iframe src="camview03.html" width="100%" height="540" scrolling="no"></iframe>
+        </div>
+        <div class="left">
+        </div>
+    </div>
+    <p>
+    <ul>
+        <a href="https://st841780.static.jp/konagatawa/DL8/index.html" target="_blank" rel="noreferrer">小長辿発電所遠隔監視</a>
+        <br>
+        <a href="index.html">ホーム</a>
+
+    </ul>
+    </p>
+</body>
+
+</html>

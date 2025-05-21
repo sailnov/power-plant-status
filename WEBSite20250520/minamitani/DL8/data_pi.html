@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html><head><title>南谷発電所</title>
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+<meta name="viewport" content="width=1024">
+<LINK REL="stylesheet" TYPE="text/css" HREF="common.css">
+<script type="text/javascript" src="button_enable.js"></script>
+<script type="text/javascript" src="dl_header.js"></script>
+<script type="text/javascript" src="data_pi.js"></script>
+<script type="text/javascript" src="xml_cmd.js" ></script>
+<script type="text/javascript" src="button_event.js"></script>
+<script type="text/javascript">
+var images = new Array(100);
+var images_idx = 0;
+image_preload = function(e) {
+	images[images_idx] = new Image();
+	images[images_idx].src = e;
+	images_idx++;
+}
+
+var print_mode = 0;
+var auto_updating = 0;
+
+window.onresize = function() {
+	var table,hh;
+	table = document.getElementById( "area_pi" );
+	if( window.innerHeight ){
+		hh = window.innerHeight - 241 - 20;
+	}
+	else if( document.documentElement.clientHeight ){
+		hh = document.documentElement.clientHeight - 241 - 20;
+	} else{
+		return;
+	}
+	table.setAttribute( "style", "height :" + hh + "px" );
+}
+
+window.onload = function() {
+	image_preload("004_ON.JPG");
+	image_preload("005_ON.JPG");
+	image_preload("006_ON.JPG");
+	image_preload("007_ON.JPG");
+	image_preload("008_ON.JPG");
+	image_preload("010_ON.JPG");
+	image_preload("011_ON.JPG");
+	image_preload("012_ON.JPG");
+	image_preload("013_ON.JPG");
+	image_preload("023_ON.JPG");
+	image_preload("015_ON.JPG");
+	image_preload("016_ON.JPG");
+
+	var table,hh,ch;
+	var row,cell,txt;
+	var str;
+
+	if( button_disable != 0 ){
+		document.getElementById("sel").title = "";
+	}
+
+	update_header();
+
+	table = document.getElementById( "area_pi" );
+	hh = window.innerHeight - 241 - 20;
+	table.setAttribute( "style", "height :" + hh + "px" );
+
+	table = document.getElementById( "list_pi" );
+	for( ch=0; ch<pi_chs; ch++ ) {
+	    row = table.insertRow( ch );
+		if( ch & 1 )	row.setAttribute( "style", "background-color: #5a5a5a" );
+		else			row.setAttribute( "style", "background-color: #808080" );
+
+		row.setAttribute( "height", "24px" );
+
+        cell = row.insertCell(0);
+        cell.setAttribute( "class", "ch" );
+		str = pi_ch[ch];
+		txt = document.createTextNode( str );
+		cell.appendChild(txt);
+
+        cell = row.insertCell(1);
+        cell.setAttribute( "class", "name" );
+		str = pi_name[ch];
+		txt = document.createTextNode( str );
+		cell.appendChild(txt);
+
+        cell = row.insertCell(2);
+        cell.setAttribute( "class", "tagno" );
+		str = pi_comm[ch];
+		txt = document.createTextNode( str );
+		cell.appendChild(txt);
+
+        cell = row.insertCell(3);
+        cell.setAttribute( "class", "pv" );
+		txt = document.createTextNode( pi_real[ch] );
+		cell.appendChild(txt);
+
+        cell = row.insertCell(4);
+        cell.setAttribute( "class", "unit" );
+        str = pi_unit[ch];
+		txt = document.createTextNode( str );
+		cell.appendChild(txt);
+
+        cell = row.insertCell(5);
+        cell.setAttribute( "class", "reset" );
+		btn = document.createElement("input");
+		btn.setAttribute( "type", "button" );
+		btn.setAttribute( "class", "reset_button" );
+		str = "ResetPi(" + pi_chno[ch] + ", '" + pi_name[ch] + "');";
+		btn.setAttribute( "onclick", str );
+		if( (button_disable == 1) || (pi_enable == 0) ) btn.disabled = true;
+		cell.appendChild(btn);
+
+        cell = row.insertCell(6);
+        cell.setAttribute( "class", "status" );
+		txt = document.createTextNode( pi_area[ch] );
+		cell.appendChild(txt);
+
+        cell = row.insertCell(7);
+        cell.setAttribute( "class", "signal" );
+        cell.setAttribute( "style", "background-color: " + pi_color[ch] );
+	}
+
+	var pos = getCookie( "POS_PI" );
+	if( pos ){
+		if( pos != 0 ){
+			document.getElementById("area_pi").scrollTop = pos;
+			clearCookie( "POS_PI" );
+		}
+	}
+
+	if( button_disable == 0 ){
+		var ref = getCookie("REF_PI");
+		if( ref == "" ){
+			ref = "0";
+		}
+		if( ref != 0 ){
+			setInterval("update_refresh()",ref*1000);
+		}
+	}
+
+}
+
+function update_refresh()
+{
+	if( print_mode != 0 ) return;
+	if( auto_updating != 0 ) return;
+	auto_updating = 1;
+	update_data_pi( update_auto, update_timeout );
+}
+
+function update_timeout()
+{
+	auto_updating = 0;
+}
+
+function update_auto()
+{
+	var ch,table,str;
+	update_header_time();
+	table = document.getElementById( "list_pi" );
+	for( ch=0; ch<pi_chs; ch++ ) {
+//		str = pi_ch[ch];
+//		table.rows[ch].cells[0].innerHTML = str;
+//		table.rows[ch].cells[1].innerHTML = pi_name[ch];
+//		table.rows[ch].cells[2].innerHTML = pi_comm[ch];
+		table.rows[ch].cells[3].innerHTML = pi_real[ch];
+//		table.rows[ch].cells[4].innerHTML = pi_unit[ch];
+		table.rows[ch].cells[6].innerHTML = pi_area[ch];
+		table.rows[ch].cells[7].setAttribute( "style", "background-color: " + pi_color[ch] );
+	}
+	auto_updating = 0;
+}
+
+function update_local()
+{
+	file_load_ie( "./data_pi.html" );
+	file_load_ie( "./data_pi.js" );
+	var pos = document.getElementById("area_pi").scrollTop;
+	if( pos != 0 ){
+		setCookie( "POS_PI", pos );
+	}
+	update();
+}
+
+function data_pi_print()
+{
+	if( print_mode == 0 ){
+		print_mode = 1;
+		document.getElementById("area_pi").scrollTop = 0;
+		document.getElementById("area_pi").className = "area_pi_print";
+		alert("print mode");
+	} else{
+		print_mode = 0;
+		document.getElementById("area_pi").className = "area_pi";
+		window.onresize();
+		alert("normal mode");
+	}
+}
+
+function refresh_rate()
+{
+	if( button_disable != 0 ) return;
+
+	var ref = getCookie("REF_PI");
+	if( ref == "" ){
+		ref = "0";
+	}
+	var rtn = window.prompt( "auto refresh rate 0-999[s]", ref );
+	if( rtn != null ){
+		if( rtn.match(/[^0-9]/) ){
+			alert("input error");
+			return;
+		}
+
+		var num = Number(rtn);
+		if( (num < 0) || (num > 999) ){
+			alert("input error");
+			return;
+		}
+
+		setCookieX( "REF_PI", rtn );
+		update_local();
+	}
+}
+</script>
+<style type="text/css">
+.table_header{
+	position : absolute;
+	top: 241px;
+	left: 0px;
+	width : 1024px;
+	height : 20px;
+	border-spacing: 0;
+	table-layout: fixed;
+	word-break: break-all;
+	word-wrap: break-word;
+}
+.area_pi{
+	position : absolute;
+	top: 261px;
+	left: 0px;
+	width : 1024px;
+	border-spacing: 0;
+	overflow-x: hidden;
+	overflow-y: auto;
+	-webkit-overflow-scrolling: touch;
+}
+.area_pi_print{
+	position : absolute;
+	top: 261px;
+	left: 0px;
+	width : 1024px;
+	border-spacing: 0;
+	overflow-x: visible;
+	overflow-y: visible;
+	-webkit-overflow-scrolling: touch;
+}
+.area_pi > *{
+	-webkit-transform: translateZ(0px);
+}
+.table_pi{
+	width : 1024px;
+	border-spacing: 0;
+	table-layout: fixed;
+	word-break: break-all;
+	word-wrap: break-word;
+}
+.ch_header{
+	width : 5%;
+	font-family:"ＭＳ ゴシック";
+	font-size : middle;
+	color : #ffffff;
+	text-align : center;
+	vertical-align : middle;
+	border-style: solid;
+	border-color: black;
+	border-width: 1px 1px 1px 0px;
+}
+.ch{
+	width : 5%;
+	font-family:"ＭＳ ゴシック";
+	font-size : middle;
+	color : #ffffff;
+	text-align : center;
+	vertical-align : middle;
+	border-style: solid;
+	border-color: black;
+	border-width: 1px 1px 1px 0px;
+}
+.name_header{
+	width : 20%;
+	font-family:"ＭＳ ゴシック";
+	font-size : middle;
+	color : #ffffff;
+	text-align : center;
+	vertical-align : middle;
+	border-style: solid;
+	border-color: black;
+	border-width: 1px;
+}
+.name{
+	width : 20%;
+	font-family:"ＭＳ ゴシック";
+	font-size : middle;
+	color : #ffffff;
+	text-align : left;
+	vertical-align : middle;
+	border-style: solid;
+	border-color: black;
+	border-width: 1px;
+}
+.tagno_header{
+	width : 20%;
+	font-family:"ＭＳ ゴシック";
+	font-size : middle;
+	color : #ffffff;
+	text-align : center;
+	vertical-align : middle;
+	border-style: solid;
+	border-color: black;
+	border-width: 1px;
+}
+.tagno{
+	width : 20%;
+	font-family:"ＭＳ ゴシック";
+	font-size : middle;
+	color : #ffffff;
+	text-align : left;
+	vertical-align : middle;
+	border-style: solid;
+	border-color: black;
+	border-width: 1px;
+}
+.pv_header{
+	width : 10%;
+	font-family:"ＭＳ ゴシック";
+	font-size : middle;
+	color : #ffffff;
+	text-align : center;
+	vertical-align : middle;
+	border-style: solid;
+	border-color: black;
+	border-width: 1px;
+}
+.pv{
+	width : 10%;
+	font-family:"ＭＳ ゴシック";
+	font-size : middle;
+	color : #ffffff;
+	text-align : right;
+	vertical-align : middle;
+	border-style: solid;
+	border-color: black;
+	border-width: 1px;
+}
+.unit_header{
+	width : 10%;
+	font-family:"ＭＳ ゴシック";
+	font-size : middle;
+	color : #ffffff;
+	text-align : center;
+	vertical-align : middle;
+	border-style: solid;
+	border-color: black;
+	border-width: 1px;
+}
+.unit{
+	width : 10%;
+	font-family:"ＭＳ ゴシック";
+	font-size : middle;
+	color : #ffffff;
+	text-align : right;
+	vertical-align : middle;
+	border-style: solid;
+	border-color: black;
+	border-width: 1px;
+}
+.reset_header{
+	width : 10%;
+	font-family:"ＭＳ ゴシック";
+	font-size : middle;
+	color : #ffffff;
+	text-align : center;
+	vertical-align : middle;
+	border-style: solid;
+	border-color: black;
+	border-width: 1px;
+}
+.reset{
+	width : 10%;
+	font-family:"ＭＳ ゴシック";
+	font-size : middle;
+	color : #ffffff;
+	text-align : center;
+	vertical-align : middle;
+	border-style: solid;
+	border-color: black;
+	border-width: 1px;
+}
+.reset_button{
+	width: 98px;
+	height: 18px;
+}
+.status_header{
+	width : 15%;
+	font-family:"ＭＳ ゴシック";
+	font-size : middle;
+	color : #ffffff;
+	text-align : center;
+	vertical-align : middle;
+	border-style: solid;
+	border-color: black;
+	border-width: 1px;
+}
+.status{
+	width : 15%;
+	font-family:"ＭＳ ゴシック";
+	font-size : middle;
+	color : #ffffff;
+	text-align : center;
+	vertical-align : middle;
+	border-style: solid;
+	border-color: black;
+	border-width: 1px;
+}
+.signal_header{
+	width : 10%;
+	font-family:"ＭＳ ゴシック";
+	font-size : middle;
+	color : #ffffff;
+	text-align : center;
+	vertical-align : middle;
+	border-style: solid;
+	border-color: black;
+	border-width: 1px 0px 1px 1px;
+}
+.signal{
+	width : 10%;
+	font-family:"ＭＳ ゴシック";
+	font-size : middle;
+	color : #ffffff;
+	text-align : left;
+	vertical-align : middle;
+	border-style: solid;
+	border-color: black;
+	border-width: 1px 0px 1px 1px;
+}
+</style>
+</head>
+
+<body style="background-color: #000000;">
+
+<!-- HEADER -->
+<div>
+	<table class="header">
+	  <tbody><tr>
+    	<td class="name1" id="name1"></td>
+    	<td class="name2" id="name2"></td>
+    	<td class="fig1"></td>
+      </tr></tbody>
+    </table>
+</div>
+
+<!-- MENU -->
+<div>
+	<!-- Menu -->
+	<input class ="menu" type="button" onclick="disp_menu();">
+
+	<!-- Data -->
+	<input class ="data_sel" type="button" title="normal mode <-> print mode" onclick="data_pi_print();">
+
+	<!-- Trend -->
+	<input class ="trend" type="button" onclick="disp_trend();">
+
+	<!-- Event -->
+	<input class ="event" type="button" onclick="disp_event();">
+
+	<!-- Update -->
+	<input class ="update" type="button" onclick="update_local();">
+</div>
+
+<!-- FUNCTION -->
+<div>
+	<!-- background -->
+	<div class="back_left"></div>
+
+	<!-- AI_DATA -->
+	<input class ="ai_data" type="button" onclick="data_ai();">
+
+	<!-- DI_DATA -->
+	<input class ="di_data" type="button" onclick="data_di();">
+
+	<!-- PI_DATA -->
+<!--
+	<div class="pi_data_sel"></div>
+-->
+	<input class="pi_data_sel" id="sel" type="button" title="auto refresh" onclick="refresh_rate();">
+
+	<!-- DO_DATA -->
+	<input class ="do_data" type="button" onclick="data_do();">
+
+	<!-- AO DATA -->
+	<input class ="ao_data" type="button" onclick="data_ao();">
+
+	<!-- PREV -->
+	<input class ="prev" type="button" onclick="data_di();">
+
+	<!-- NEXT -->
+	<input class ="next" type="button" onclick="data_do();">
+
+	<!-- background -->
+	<div class="back_right"></div>
+</div>
+
+<!-- TIME,NAME3,DATE -->
+<div>
+	<table class="time_name3_date">
+	  <tbody><tr>
+    	<td class="back18"></td>
+    	<td class="time" id="time"></td>
+    	<td class="name3" id="name3"></td>
+    	<td class="date" id="date"></td>
+    	<td class="back22"></td>
+      </tr></tbody>
+    </table>
+</div>
+
+<!-- PI DATA -->
+<div>
+	<table class="table_header">
+	  <tbody>
+	  <tr style="background-color: #5a5a5a;">
+	    <th class="ch_header">Ch</th>
+	    <th class="name_header">Name</th>
+	    <th class="tagno_header">Comment</th>
+	    <th class="pv_header">Data</th>
+	    <th class="unit_header">Unit</th>
+	    <th class="reset_header">Reset</th>
+	    <th class="status_header">Status</th>
+	    <th class="signal_header">Signal</th>
+	  </tr>
+	  </tbody>
+	</table>
+</div>
+<div class="area_pi" id="area_pi">
+	<table class="table_pi" id="list_pi">
+	  <tbody></tbody>
+	</table>
+</div>
+
+</body></html>
+

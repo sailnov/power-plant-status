@@ -1,0 +1,141 @@
+﻿@charset "utf-8";
+/* CSS Document */
+	#rk_wrapper1 * {font-family:"メイリオ",Verdana,Geneva,sans-serif;}
+/*0*/  #rk_wrapper1 {width:1280px; height:720px;position:relative; margin: 10px auto 10px auto; background-color:#C9C9C9;opacity:0;visibility:hidden;}
+#rk_wrapper1 {border:8px solid #F0F0F0; border-radius:4px; padding:0;box-shadow:1px 1px 6px #3c3c3c;-ms-filter: "progid:DXImageTransform.Microsoft.Shadow(color=#3c3c3c,direction=135,strength=3,enabled=true)";}
+	#rk_wrapper1 p {line-height:1.0; text-align: left;}	
+	.rk_slides * { margin:0; padding:0;   letter-spacing: 0; line-height: 1.0; text-indent: 0;}
+/*1*/  .rk_slides {width:1280px; height:720px;padding:0px;position:relative; z-index:100;overflow:hidden;}
+    .rk_slides ul {list-style:none;padding:0px;margin:0px; position:relative; width:1000000px;}
+	.rk_slides ul li 	 { float:left; display:block; margin:0; padding:0;}
+	.rk_slides_li_block { position:absolute; display:block; width:100%;}
+  	.rk_slides ul li  img { position:relative; z-index:1;}
+
+	.rk_slides .active { z-index:10; }
+	.rk_slides .reset 	{ z-index:3; }
+
+/*2*/	.rk_slides_span { color:#FFFFFF; z-index:555; background-color: rgba(0,0,0,0.30);}
+	.rk_slides_span_bgIE8 { background:url('comment-bg.png');}
+	.rk_slides_blockspan { display:none;left:0px; bottom:0px; padding:10px;width:100%;position:absolute!important;}
+	.rk_slides_shiftspan { display:block;position:relative; padding:10px; }
+	.rk_thumb { position: absolute; z-index:300;top:-10000px;}
+	.rk_thumb * { margin:0; padding:0;  letter-spacing: 0; line-height: 1.0; text-indent: 0;}
+/*3*/  .rk_thumb {height:80px; margin: 0 auto;	overflow: hidden;
+/*4*/      background:-moz-linear-gradient(#FFFFFF, #C0C0C0);
+/*5*/      background:-webkit-gradient(linear, left top, left bottom, from(#FFFFFF),to(#C0C0C0));
+/*6*/      background:-o-linear-gradient(#FFFFFF, #C0C0C0);
+/*7*/      -ms-filter: "progid:DXImageTransform.Microsoft.gradient(GradientType=0,startColorstr='#FFFFFF',endColorstr='#C0C0C0')";}
+	.rk_thumbbg_ie {background:url('thumbbg_ie.png');}
+	.rk_thumb ul {	list-style: none;	width:1000000px;	 }
+	.rk_thumb li {	float: left; cursor:pointer;	}
+
+/*コメントとタイトル　h1:タイトル content:コメント h2:サムネイルのタイトル*/
+	.rk_span_h1, .rk_span_h2, .rk_span_content { font-size:18px; font-weight:bold; 
+/*8*/      color:#FFFFFF; text-shadow: rgba(0,0,0,0.20) 2px 2px 0;
+	}
+	.rk_span_h1 { margin-bottom:0; line-height: 1.2}
+	.rk_span_content { font-size:14px; font-weight: normal; line-height:1.2; margin-top:0.2em; margin-bottom:0.2em; text-indent: 1em;}
+	.rk_span_h2 {font-size:12px; font-weight:bold; line-height:1.2; text-align:center; }
+/*9*/  .rk_span_h2 {display:block; width: 180px; height:20px;overflow:hidden; color:#000000;
+/*10*/       text-shadow: rgba(16,0,0,0.20) 1px 1px 0;}
+
+	/* 数字の表現 - 角丸は  anchorは不要だった。*/
+	.rk_box_kageattr {	
+		border-radius:3px;
+	 	box-shadow: 2px 2px 2px -1px #1C1C1C; 	
+	}
+	.rk_control_base_attr {position: absolute; display: block; background: black;}
+	/* Numberコントローラ用*/
+	.rk_control_num, .rk_ctrlnum_iPad { position: absolute; display: block; z-index: 210;font-weight: bold; font-size: 11pt; }
+	.rk_control_num li, .rk_ctrlnum_iPad li { 
+		list-style: none; display: block; float:left;width:27px; height:20px;
+		margin-right:3px; margin-bottom:3px; text-align: center;text-decoration:none; color:white;
+		background: #3C3C3C; opacity:0.7;cursor:pointer;}
+	.rk_control_num li.stay,  .rk_ctrlnum_iPad li.stay  { background: #00FFFF; }
+	
+	.rk_control_num li:hover { background: orange;	}
+	.num_hover { background:orange;}
+	/* Dotコントローラ用*/
+	.rk_control_dot  { position:absolute; display:block; height:15px;z-index: 210;}
+	.rk_control_dot li {list-style: none; display:block; float:left; margin-right:5px; width:15px; height:15px; 
+			background: url('ctrl3stat.png') no-repeat; background-position:0 0;
+			cursor:pointer; text-indent:-9999px;}
+	.rk_control_dot li.stay  { background-position:0 -30px; }
+	.rk_control_dot li:hover { background-position:0 -15px; }
+
+	/*rk_thumb表示用 border幅などは Delphiで設定すればよいが..*/
+	.rk_photo_frame {box-shadow: 1px 1px 3px 1px rgba(30,30,30,0.5); 
+			-ms-filter: "progid:DXImageTransform.Microsoft.Shadow(color=#1c1c1c,direction=135,strength=3,enabled=true)";}
+
+	.rk_thumb_frame {box-shadow: 1px 1px 3px 1px rgba(30,30,30,0.5); }
+	.rk_imghover {	box-shadow: 1px 1px 3px 1px rgba(30,30,30,0.5),0px 0px 3px 3px rgba(0,200,255,0.5);}
+	.rk_imgactive {box-shadow: 1px 1px 3px 1px rgba(30,30,30,0.5),0px 0px 3px 3px rgba(255,165,0,0.6);}
+	
+	.rk_thumb_frame_ie8 { background: url(ie8thumb_li_bg.png) no-repeat;}
+	.rk_thumb_frame_ie8:hover  { background: url(ie8thumb_li_hover.png) no-repeat;}
+	.rk_thumb_frame_ie8.active { background: url(ie8thumb_li_active.png) no-repeat;}
+	
+	.rk_navi_btn {
+		 position: absolute; z-index:350;		cursor: pointer; 
+/*11*/ width:  40px; height: 40px; top:130px;
+	}
+	.rk_navi_prev { left: 0px; background: url(prev_arrow.png) no-repeat;}
+	.rk_navi_next { right:0px; background: url(next_arrow.png) no-repeat;}
+
+	.rk_cropper {display:block; overflow:hidden; position: absolute;	}
+	.rk_cropper img{ position:absolute; }
+
+/*.preloader { background:url(indicator.gif) center center no-repeat #d7d7d7;}*/
+	.rak_progress {
+		display: block;
+		position: absolute; z-index:260;
+		padding: 0;
+ 		line-height:1.0; 
+	}
+	.rak_progtext {
+		margin: 0.5em;
+		color:black; font-size:14px; font-weight:bold; text-align: center;
+		text-shadow: rgba(0,0,0,0.2) 2px 2px 0;
+	}
+	.rak_progbar { 
+		height: 4px;  
+		position: relative; background: #555;border-radius: 10px;
+		padding: 3px;	box-shadow : inset 0 -1px 1px rgba(255,255,255,0.3);
+	}
+	.rak_progbar > span {
+				display: block;	height: 100%;	border-radius:8px;
+				position: relative;		overflow: hidden;
+/*12*/	background-color: #FF9900;
+				box-shadow: inset 0 2px 9px  rgba(255,255,255,0.3), inset 0 -2px 6px rgba(0,0,0,0.4);
+	}
+	/** New Updateなどの装飾用 */
+	.rk_topicbase {
+		font-family:Verdana, Geneva, sans-serif;
+		font-size:16px;
+		letter-spacing: 1px;
+		position: absolute;
+		display:block;
+		width: 200px;
+		border-top: 1px solid #ccc;
+		border-right: 1px solid #999;
+		border-bottom: 1px solid #999;
+		border-left: 1px solid #ccc;
+		padding:5px 5px;
+		margin: 0;
+		text-align: center;
+		font-weight: bold;
+		z-index:330;
+		-webkit-transform-origin: 220px 10px;
+		-moz-transform-origin: 220px 10px;
+		-ms-transform-origin: 220px 10px;
+		-o-transform-origin: 220px 10px;
+/*13*/  color:#FFFFFF;
+	}
+	.rk_topicbase p { padding:0; margin:0;  text-align: center;}
+ 	.rk_topic1  {　
+/*14*/  border: 1px solid rgba(0,0,0,0.2); 	background:rgba(0,0,0,0.50); text-shadow:0 0 3px #aaa,1px 1px 1px #100000;
+	}
+	.rk_topicIE8 {
+/*15*/  background:#000000;
+ } 
+/*.raktopic1:hover  {	color:#fff; text-shadow: 0px 0px 10px #FFD700,0px 0px 20px #FFD700,	0px 0px 30px #FFD700,	0px 0px 40px #FFD700,	0px 0px 50px #FFD700,	0px 0px 60px #FFD700;}*/

@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html><head><title>下西発電所</title>
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+<meta name="viewport" content="width=1024">
+<LINK REL="stylesheet" TYPE="text/css" HREF="s_common.css">
+<script type="text/javascript" src="button_enable.js"></script>
+<script type="text/javascript" src="s_button_event.js"></script>
+<script type="text/javascript" src="s_xml_cmd.js" ></script>
+<script type="text/javascript">
+new Image().src = "fig1.JPG";
+new Image().src = "fig2.JPG";
+new Image().src = "fig3.JPG";
+
+window.onpageshow = function() {
+	document.screen_select.s_sel.value = "MENU";
+}
+
+function update_local()
+{
+	location.reload(true);
+}
+</script>
+<style type="text/css">
+.fig2{
+	position : absolute;
+	top: 241px;
+	left: 0px;
+	width : 512px;
+	height : 420px;
+	border: 1px;
+	border-spacing: 0;
+	background-image : url("fig2.JPG");
+	background-repeat: no-repeat;
+}
+.fig3{
+	position : absolute;
+	top: 241px;
+	left: 512px;
+	width : 512px;
+	height : 420px;
+	border: 1px;
+	border-spacing: 0;
+	background-image : url("fig3.JPG");
+	background-repeat: no-repeat;
+}
+</style>
+</head>
+
+<body style="background-color: #000000;">
+
+<!-- HEADER -->
+<div>
+	<table class="header">
+	  <tbody><tr>
+    	<td class="name1">下西発電所</td>
+    	<td class="name2"></td>
+    	<td class="fig1"></td>
+      </tr></tbody>
+    </table>
+</div>
+
+<!-- SCREEN SELCT -->
+<form class="screen_select" name="screen_select">
+  <select class="s_sel" name="s_sel" onchange="jump();">
+	<option value="MENU" selected>Menu</option>
+	<option value="DATA">Data</option>
+	<option value="TREND">Trend</option>
+	<option value="EVENT">Event</option>
+  </select>
+</form>
+
+<!-- TYPE SELCT -->
+<div class="type_select">
+	<div class="t_sel"></div>
+</div>
+
+<!-- UPDATE -->
+<input class ="button_update" type="button" value="Update" onclick="update_local();">
+
+<!-- TIME,NAME3,DATE -->
+<div>
+	<table class="time_name3_date">
+	  <tbody><tr>
+    	<td class="back18"></td>
+    	<td class="time">19:41:17</td>
+    	<td class="name3"></td>
+    	<td class="date">2025/05/19</td>
+    	<td class="back22"></td>
+      </tr></tbody>
+    </table>
+</div>
+
+<!-- USER PICTURE -->
+<div>
+	<!-- fig2 -->
+	<div class="fig2"></div>
+
+	<!-- fig3 -->
+	<div class="fig3"></div>
+</div>
+
+</body></html>
+

@@ -1,31 +1,30 @@
 "use client";
-import { use, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { CompositeChart } from "@mantine/charts";
+import { useSearchParams } from "next/navigation";
 import Image from "next/image";
 
-type PageProps = {
-    params: Promise<{
-        id: string;
-    }>;
-};
-
-export default function PowerPlantDetails({ params }: PageProps) {
-    const { id } = use(params);
+export default function PowerPlantData() {
+    //queryからIDを取得
+    const searchParams = useSearchParams();
+    const id = searchParams.get("id");
     const [plant, setPlant] = useState<PowerPlant | null>(null);
+    const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
     useEffect(() => {
         let isMounted = true;
         let prevData: PowerPlant | null = null;
         const fetchData = async () => {
             try {
-                const res = await fetch(`/data/power-plants/${id}.json?_=${Date.now()}`);
+                const res = await fetch(`/data/${id}.json?_=${Date.now()}`);
                 const data: PowerPlant = await res.json();
                 // データが変わった場合のみ更新
                 if (JSON.stringify(data) !== JSON.stringify(prevData)) {
                     prevData = data;
                     if (isMounted) setPlant(data);
+                    if (isMounted) setLastUpdated(new Date());
                 }
             } catch {
-                // エラーは無視
+                if (isMounted) setPlant(null);
             }
         };
         fetchData();
@@ -35,7 +34,12 @@ export default function PowerPlantDetails({ params }: PageProps) {
             clearInterval(timer);
         };
     }, [id]);
-    if (!plant) return <p>Loading…</p>;
+    if (!id) {
+        return <p>Invalid power plant ID</p>;
+    }
+    if (!plant) {
+        return <p>Loading…</p>;
+    }
     const monthlyChart = plant.monthly_generations.map((value, index) => {
         const generation = value;
         const utilization = plant.monthly_utilization[index];
@@ -51,17 +55,28 @@ export default function PowerPlantDetails({ params }: PageProps) {
         const utilization = plant.hourly_utilization[index];
         return { key: `${index}時`, generation, utilization };
     });
+    const currentYear = new Date().getFullYear();
+    const currentMonth = new Date().getMonth() + 1;
+    const currentDay = new Date().getDate();
     return (
         <div className="max-w-6xl w-full mx-auto p-6">
-            <h1 className="text-xl font-bold mb-4">{plant.name}</h1>
+            <div className="mb-4">
+                <h1 className="text-xl font-bold">{plant.name}</h1>
+                <p className="text-sm text-muted-foreground">最終更新: {lastUpdated ? lastUpdated.toLocaleString() : "不明"}</p>
+            </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="flex flex-col gap-y-4">
-                    <h3 className="text-lg font-bold text-center">現在の状態: {plant.status === "ON" ? "稼働中" : plant.status === "OFF" ? "停止中" : "異常停止"}</h3>
+                    <h3 className="text-lg font-bold text-center">
+                        現在の状態:{" "}
+                        <span className={`${plant.status === "ON" ? "text-green-500" : plant.status === "OFF" ? "text-blue-500" : plant.status === "ERR" ? "text-red-500" : "text-gray-500"}`}>
+                            {plant.status === "ON" ? "稼働中" : plant.status === "OFF" ? "停止中" : plant.status === "ERR" ? "異常" : "不明"}
+                        </span>
+                    </h3>
                     <Image
                         width={1195}
                         height={550}
-                        src="/PS01_ON.jpg"
-                        alt="稼働中"
+                        src={`/PS01_${plant.status}.jpg`}
+                        alt={plant.status}
                     />
                 </div>
                 <div className="flex flex-col gap-y-4">
@@ -79,9 +94,9 @@ export default function PowerPlantDetails({ params }: PageProps) {
                         withRightYAxis
                         yAxisLabel="発電量（kWh）"
                         rightYAxisLabel="設備利用率（%）"
-                        rightYAxisProps={{ domain: [0, 1] }}
+                        rightYAxisProps={{ domain: [0, 100] }}
                     />
-                    <p className="text-sm text-muted-foreground text-center">2025年</p>
+                    <p className="text-sm text-muted-foreground text-center">{currentYear}年</p>
                 </div>
                 <div className="flex flex-col gap-y-4">
                     <h3 className="text-lg font-bold text-center">今月の発電量</h3>
@@ -98,9 +113,11 @@ export default function PowerPlantDetails({ params }: PageProps) {
                         withRightYAxis
                         yAxisLabel="発電量（kWh）"
                         rightYAxisLabel="設備利用率（%）"
-                        rightYAxisProps={{ domain: [0, 1] }}
+                        rightYAxisProps={{ domain: [0, 100] }}
                     />
-                    <p className="text-sm text-muted-foreground text-center">2025年</p>
+                    <p className="text-sm text-muted-foreground text-center">
+                        {currentYear}年{currentMonth}月
+                    </p>
                 </div>
                 <div className="flex flex-col gap-y-4">
                     <h3 className="text-lg font-bold text-center">本日の発電量</h3>
@@ -117,9 +134,11 @@ export default function PowerPlantDetails({ params }: PageProps) {
                         withRightYAxis
                         yAxisLabel="発電量（kWh）"
                         rightYAxisLabel="設備利用率（%）"
-                        rightYAxisProps={{ domain: [0, 1] }}
+                        rightYAxisProps={{ domain: [0, 100] }}
                     />
-                    <p className="text-sm text-muted-foreground text-center">2025年</p>
+                    <p className="text-sm text-muted-foreground text-center">
+                        {currentYear}年{currentMonth}月{currentDay}日
+                    </p>
                 </div>
             </div>
         </div>

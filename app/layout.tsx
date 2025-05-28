@@ -4,6 +4,7 @@ import "./globals.css";
 import "@mantine/core/styles.css";
 import "@mantine/charts/styles.css";
 import { createTheme, MantineProvider } from "@mantine/core";
+import { Suspense } from "react";
 
 const theme = createTheme({
     /** Put your mantine theme override here */
@@ -26,7 +27,9 @@ export default function RootLayout({
     return (
         <html lang="ja">
             <body className={`${notoSansJP.className}`}>
-                <MantineProvider theme={theme}>{children}</MantineProvider>
+                <Suspense fallback={<p>Loading...</p>}>
+                    <MantineProvider theme={theme}>{children}</MantineProvider>
+                </Suspense>
             </body>
         </html>
     );

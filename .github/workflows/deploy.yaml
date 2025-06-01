@@ -28,5 +28,6 @@ jobs:
           local-dir: ./out/
           exclude: |
             .htaccess
+            **/api/plants.json
             **/data/*.json
             **/webcam/*.jpg

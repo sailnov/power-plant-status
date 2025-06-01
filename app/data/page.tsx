@@ -59,8 +59,8 @@ export default function PowerPlantData() {
     const currentMonth = new Date().getMonth() + 1;
     const currentDay = new Date().getDate();
     return (
-        <div className="max-w-6xl w-full mx-auto p-6">
-            <div className="mb-4">
+        <div className="w-full md:p-6">
+            <div className="mb-4 max-md:p-6">
                 <h1 className="text-xl font-bold">{plant.name}</h1>
                 <p className="text-sm text-muted-foreground">最終更新: {lastUpdated ? lastUpdated.toLocaleString() : "不明"}</p>
             </div>
@@ -72,12 +72,15 @@ export default function PowerPlantData() {
                             {plant.status === "ON" ? "稼働中" : plant.status === "OFF" ? "停止中" : plant.status === "ERR" ? "異常" : "不明"}
                         </span>
                     </h3>
-                    <Image
-                        width={1195}
-                        height={550}
-                        src={`/PS01_${plant.status}.jpg`}
-                        alt={plant.status}
-                    />
+                    <div className="relative w-full h-full max-md:h-64">
+                        <Image
+                            fill
+                            src={`/PS01_${plant.status}.jpg`}
+                            alt={plant.status}
+                            objectFit="contain"
+
+                        />
+                    </div>
                 </div>
                 <div className="flex flex-col gap-y-4">
                     <h3 className="text-lg font-bold text-center">月間発電量</h3>

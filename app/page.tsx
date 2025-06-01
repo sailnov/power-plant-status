@@ -22,7 +22,7 @@ export default function Home() {
                     </Link>
                 </li>
             </ul>
-            <h1 className="text-xl font-bold mb-1">発電所監視カメラ</h1>
+            <h1 className="text-xl font-bold mb-1">発電所監視カメラ（まだ工事中）</h1>
             <ul className="list-disc pl-6 mb-6">
                 <li>
                     <Link

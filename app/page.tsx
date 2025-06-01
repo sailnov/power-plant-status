@@ -49,7 +49,7 @@ export default function Home() {
                     </li>
                 ))}
             </ul>
-            <h1 className="text-xl font-bold mb-1">発電所監視カメラ（まだ工事中）</h1>
+            <h1 className="text-xl font-bold mb-1">発電所監視カメラ（多分大丈夫）</h1>
             <ul className="list-disc pl-6 mb-6">
                 {plants.map((plant) => (
                     <li key={plant.id}>
